@@ -56,8 +56,16 @@ class BasePlugin:
             options['LevelActions'] = ''
             options['LevelNames'] = '|'.join(mode)
             options['SelectorStyle'] = '0'
-            Domoticz.Unit(Name='Test', DeviceID='123', Unit=1, Type=244, Subtype=62, Switchtype=18, Options=options, Used=1).Create()
-            Domoticz.Log("Devices created.")
+            Domoticz.Unit(Name='Test Selection ', DeviceID='123', Unit=1, Type=244, Subtype=62, Switchtype=18, Options=options, Used=1).Create()
+            Domoticz.Log("Device Selection created.")
+
+            options = {}
+            options['ValueStep'] = '1'
+            options['ValueMin'] = '40'
+            options['ValueMax'] = '100'
+            options['ValueUnit'] = '°C'
+            Domoticz.Unit(Name='Test Thermostat', DeviceID='123', Unit=2, Type=242, Subtype=1, Options=options, Used=1).Create()
+            Domoticz.Log("Device Thermostat created.")
 
     def onStop(self):
         Domoticz.Log("onStop called")
