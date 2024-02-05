@@ -50,22 +50,10 @@ class BasePlugin:
             DumpConfigToLog()
 
         if (len(Devices) == 0):
-            mode = ['off','1','2','3','4','5']
-            options = {}
-            options['LevelOffHidden'] = 'true'
-            options['LevelActions'] = ''
-            options['LevelNames'] = '|'.join(mode)
-            options['SelectorStyle'] = '0'
-            Domoticz.Unit(Name='Test Selection ', DeviceID='123', Unit=1, Type=244, Subtype=62, Switchtype=18, Options=options, Used=1).Create()
+            Domoticz.Unit(Name='Test switch', DeviceID='123', Unit=1, Type=244, Subtype=72, Switchtype=0, Used=1).Create()
             Domoticz.Log("Device Selection created.")
 
-            options = {}
-            options['ValueStep'] = '1'
-            options['ValueMin'] = '40'
-            options['ValueMax'] = '100'
-            options['ValueUnit'] = '°C'
-            Domoticz.Unit(Name='Test Thermostat', DeviceID='123', Unit=2, Type=242, Subtype=1, Options=options, Used=1).Create()
-            Domoticz.Log("Device Thermostat created.")
+        Domoticz.Heartbeat(30)
 
     def onStop(self):
         Domoticz.Log("onStop called")
@@ -78,6 +66,15 @@ class BasePlugin:
 
     def onCommand(self, DeviceID, Unit, Command, Level, Color):
         Domoticz.Log("onCommand called for Device " + str(DeviceID) + " Unit " + str(Unit) + ": Parameter '" + str(Command) + "', Level: " + str(Level))
+        if Command == 'Off':
+            Devices[DeviceID].Units[Unit].sValue = 'Off'
+            Devices[DeviceID].Units[Unit].nValue = 0
+            Devices[DeviceID].Units[Unit].Update()
+
+        elif Command == 'On':
+            Devices[DeviceID].Units[Unit].sValue = 'On'
+            Devices[DeviceID].Units[Unit].nValue = 1
+            Devices[DeviceID].Units[Unit].Update()
 
     def onNotification(self, Name, Subject, Text, Status, Priority, Sound, ImageFile):
         Domoticz.Log("Notification: " + Name + "," + Subject + "," + Text + "," + Status + "," + str(Priority) + "," + Sound + "," + ImageFile)
@@ -87,7 +84,9 @@ class BasePlugin:
 
     def onHeartbeat(self):
         Domoticz.Log("onHeartbeat called")
-
+        Devices['123'].Units[1].sValue = 'On'
+        Devices['123'].Units[1].nValue = 1
+        Devices['123'].Units[1].Update()
 global _plugin
 _plugin = BasePlugin()
 
